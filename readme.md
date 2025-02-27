@@ -1,13 +1,28 @@
 # Here
 
-This code allows relative file imports. 
+Python package that replicates the R package called "here".
 
-It's useful when you run a python script from a shell that `cd`s elsewhere, such that it can't use code like `from .. import xyz` or `from .abc import xyz`. 
+## Overview
 
-Instead, you can use it like this:
+The `here` package provides utility functions to determine the root directory of your project and easily resolve paths relative to it. This is particularly useful for managing file paths when calling the code from shells that `cd` to other directories before executing the script.
+
+## Features
+
+- Determine the root directory of the current file working directory.
+- Resolve paths relative to the root directory.
+- Supports usage in Jupyter notebooks, .py scripts, and interactive Python shells.
+
+## Installation
+
+You can install the package using pip:
+
+```bash
+pip install here
+```
+
+## Example Usage
+
 ```python
-from here import get_file_working_directory, here
-
 # Get the file working directory
 file_working_directory = get_file_working_directory()
 print(f"File working directory: {file_working_directory}")
@@ -16,5 +31,6 @@ print(f"File working directory: {file_working_directory}")
 resolved_path = here("data/output")
 print(f"Resolved path: {resolved_path}")
 ```
+
 
 It works on both .py and .ipynb files!
