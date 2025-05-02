@@ -1,5 +1,5 @@
 from pathlib import Path
-import os
+from IPython import get_ipython
 
 def get_file_working_directory():
     """
@@ -21,12 +21,14 @@ def get_file_working_directory():
     try:
         
         # Check if running in a Jupyter notebook
-        if 'get_ipython' in globals() and hasattr(get_ipython(), 'config'):
+        if get_ipython() is not None and hasattr(get_ipython(), 'config'):
             # Return current working directory
             return Path.cwd()  
         else:
-            # Return the parent of the script's directory
-            return Path(__file__).resolve().parent.parent  
+            try:
+                return Path(__file__).resolve().parent.parent
+            except NameError:
+                return Path.cwd()
     except NameError:
         
         # If __file__ is not defined (e.g., interactive shell), fallback to current working directory
@@ -47,11 +49,11 @@ def here(path=""):
 
     Example:
         >>> file_working_directory = get_file_working_directory()
-        >>> print(file_working_directory)
+        >>> resolved_path = here("data/output")
         /Users/username/my_workspace
 
-        >>> resolved_path = resolve_path("data/output")
-        >>> print(resolved_path)
+        >>> resolved_path = here("data/output")
+        >>> resolved_path = here("../config")
         /Users/username/my_workspace/data/output
 
         >>> resolved_path = resolve_path("../config")
