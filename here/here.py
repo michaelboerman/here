@@ -4,7 +4,6 @@ import inspect
 
 
 def get_caller_file_path():
-
     # Get the stack frame of the caller
     caller_frame = inspect.stack()[1]
 
@@ -13,7 +12,7 @@ def get_caller_file_path():
     return caller_file
 
 
-def get_file_working_directory(file = get_caller_file_path()):
+def get_file_working_directory(file=get_caller_file_path()):
     """
     Determines the root directory of the current file working directory.
 
@@ -31,20 +30,19 @@ def get_file_working_directory(file = get_caller_file_path()):
     """
 
     try:
-        
         # Check if running in a Jupyter notebook
-        if get_ipython() is not None and hasattr(get_ipython(), 'config'):
+        if get_ipython() is not None and hasattr(get_ipython(), "config"):
             # Return current working directory
-            return Path.cwd()  
+            return Path.cwd()
         else:
             try:
                 return Path(file).resolve().parent.parent
             except NameError:
                 return Path.cwd()
     except NameError:
-        
         # If __file__ is not defined (e.g., interactive shell), fallback to current working directory
         return Path.cwd()
+
 
 def here(path=""):
     """
@@ -72,9 +70,9 @@ def here(path=""):
         >>> print(resolved_path)
         /Users/username/config
     """
-    
+
     file_working_directory = get_file_working_directory()
-    
+
     # Split the input path on '/' and join it with the file working directory root
     return file_working_directory.joinpath(*path.split("/")).resolve()
 

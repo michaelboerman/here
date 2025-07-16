@@ -1,0 +1,33 @@
+name: Lint and Format with Ruff
+
+on: [push]
+
+jobs: 
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install the code linting and formatting tool Ruff
+        run: pipx install ruff
+
+      - name: Apply lint findings with Ruff
+        run: ruff check --fix --target-version=py39
+
+      - name: Format code with Ruff
+        run: ruff format --in-place --target-version=py39
+
+      - name: Push changes back to the repository
+        if: success() # Only push changes if the linting step succeeds
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Apply Ruff lint fixes"
+          git push

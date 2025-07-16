@@ -1,0 +1,16 @@
+# Configuration file for the Ruff auto-linter and auto-formatter 
+# for the Github Action
+
+# Unlike `Black`, this allows some customization
+# which I need, because I abhor single quotes
+
+# https://docs.astral.sh/ruff/formatter/#philosophy
+# https://docs.astral.sh/ruff/configuration/
+# https://docs.astral.sh/ruff/settings/#format
+
+line-length = 100
+
+[format]
+quote-style = "double"
+indent-style = "space"
+docstring-code-format = true
