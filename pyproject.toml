@@ -10,7 +10,6 @@ authors = [
 ]
 description = "Python package that replicates the R package called 'here'."
 readme = "readme.md"
-readme-content-type = "text/markdown" 
 requires-python = ">=3.8"
 classifiers = [
     "Programming Language :: Python :: 3",
