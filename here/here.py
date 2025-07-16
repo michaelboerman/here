@@ -1,7 +1,19 @@
 from pathlib import Path
 from IPython import get_ipython
+import inspect
 
-def get_file_working_directory():
+
+def get_caller_file_path():
+
+    # Get the stack frame of the caller
+    caller_frame = inspect.stack()[1]
+
+    # Get the file path of the caller
+    caller_file = caller_frame.filename
+    return caller_file
+
+
+def get_file_working_directory(file = get_caller_file_path()):
     """
     Determines the root directory of the current file working directory.
 
@@ -26,7 +38,7 @@ def get_file_working_directory():
             return Path.cwd()  
         else:
             try:
-                return Path(__file__).resolve().parent.parent
+                return Path(file).resolve().parent.parent
             except NameError:
                 return Path.cwd()
     except NameError:
@@ -65,3 +77,10 @@ def here(path=""):
     
     # Split the input path on '/' and join it with the file working directory root
     return file_working_directory.joinpath(*path.split("/")).resolve()
+
+
+if __name__ == "__main__":
+    # Example usage
+    print("File Working Directory:", get_file_working_directory())
+    print("Resolved Path:", here("data/output"))
+    print("Resolved Path with Parent:", here("../config"))
