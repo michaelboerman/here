@@ -21,7 +21,7 @@ jobs:
         run: ruff check --fix --target-version=py39
 
       - name: Format code with Ruff
-        run: ruff format -- --in-place -- --target-version=py39
+        run: ruff format
 
       - name: Push changes back to the repository
         if: success() # Only push changes if the linting step succeeds
