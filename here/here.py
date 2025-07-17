@@ -33,15 +33,17 @@ def get_file_working_directory(file=get_caller_file_path()):
         # Check if running in a Jupyter notebook
         if get_ipython() is not None and hasattr(get_ipython(), "config"):
             # Return current working directory
-            return Path.cwd()
+            file_path = Path.cwd()
         else:
             try:
-                return Path(file).resolve().parent.parent
+                file_path = str(Path(get_caller_file_path()).parent)
             except NameError:
-                return Path.cwd()
+                file_path = Path.cwd()
     except NameError:
         # If __file__ is not defined (e.g., interactive shell), fallback to current working directory
-        return Path.cwd()
+        file_path = Path.cwd()
+
+    return str(file_path)
 
 
 def here(path=""):
@@ -71,14 +73,15 @@ def here(path=""):
         /Users/username/config
     """
 
-    file_working_directory = get_file_working_directory()
+    file_working_directory = Path(get_file_working_directory())
 
     # Split the input path on '/' and join it with the file working directory root
-    return file_working_directory.joinpath(*path.split("/")).resolve()
+    resolved_path = file_working_directory.joinpath(*path.split("/")).resolve()
+    return str(resolved_path)
 
 
 if __name__ == "__main__":
     # Example usage
     print("File Working Directory:", get_file_working_directory())
-    print("Resolved Path:", here("data/output"))
-    print("Resolved Path with Parent:", here("../config"))
+    print("Resolved Path of subfolders data/output:", here("data/output"))
+    print("Resolved Path with config folder parallel to Parent:", here("../config"))
