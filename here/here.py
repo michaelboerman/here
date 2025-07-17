@@ -34,14 +34,15 @@ def get_file_working_directory(file=get_caller_file_path()):
         if get_ipython() is not None and hasattr(get_ipython(), "config"):
             # Return current working directory
             file_path = Path.cwd()
+        # could be a .py script or interactive in terminal.
         else:
             try:
                 file_path = str(Path(get_caller_file_path()).parent)
             except NameError:
-                file_path = Path.cwd()
+                file_path = str(Path(get_caller_file_path()).parent)
     except NameError:
         # If __file__ is not defined (e.g., interactive shell), fallback to current working directory
-        file_path = Path.cwd()
+        file_path = str(Path(get_caller_file_path()).parent)
 
     return str(file_path)
 
