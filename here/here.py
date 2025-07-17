@@ -6,16 +6,15 @@ import inspect
 def get_calling_script_file_path():
     # Get the stack frame of the caller
     # the "2" refers to the frame of the FILE that called this function
-    try: 
+    try:
         caller_frame = inspect.stack()[2]
     except IndexError:
         # Fallback to the immediate caller if stack is too short
-        caller_frame = inspect.stack()[1]  
+        caller_frame = inspect.stack()[1]
 
     # Get the file path of the caller
     caller_file = caller_frame.filename
     return caller_file
-
 
 
 def get_file_working_directory(file=get_calling_script_file_path()):
@@ -46,7 +45,7 @@ def get_file_working_directory(file=get_calling_script_file_path()):
                 file_path = str(Path(get_calling_script_file_path()).parent)
             except NameError:
                 print("error: Could not determine the calling script file path.")
-                
+
     except NameError:
         # If __file__ is not defined (e.g., interactive shell), fallback to current working directory
         file_path = str(Path.cwd())
