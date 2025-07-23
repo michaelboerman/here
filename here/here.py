@@ -5,12 +5,7 @@ import inspect
 
 def get_calling_script_file_path():
     # Get the stack frame of the caller
-    # the "2" refers to the frame of the FILE that called this function
-    try:
-        caller_frame = inspect.stack()[2]
-    except IndexError:
-        # Fallback to the immediate caller if stack is too short
-        caller_frame = inspect.stack()[1]
+    caller_frame = inspect.stack()[1]
 
     # Get the file path of the caller
     caller_file = caller_frame.filename
@@ -80,7 +75,8 @@ def here(path=""):
         /Users/username/config
     """
 
-    file_working_directory = Path(get_file_working_directory())
+    calling_file = inspect.stack()[2].filename
+    file_working_directory = Path(calling_file)
 
     # Split the input path on '/' and join it with the file working directory root
     resolved_path = file_working_directory.joinpath(*path.split("/")).resolve()
