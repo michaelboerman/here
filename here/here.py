@@ -33,7 +33,7 @@ def get_calling_script_file_path(print_debug_info=False):
     # to find the first frame that does not contain "python.3" in its filename,
     # because those are likely to be internal Python frames or debugger frames.
     for frame in reversed(relevant_stack):
-        if "python3" not in frame.filename:
+        if "python3" not in frame.filename.lower():
             initial_caller_frame = frame
             break
     else:
