@@ -92,7 +92,7 @@ def here(path=""):
     """
 
     calling_file = get_calling_script_file_path()
-    file_working_directory = Path(calling_file)
+    file_working_directory = Path(calling_file).parent
 
     # Split the input path on '/' and join it with the file working directory root
     resolved_path = file_working_directory.joinpath(*path.split("/")).resolve()
