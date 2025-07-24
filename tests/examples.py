@@ -12,6 +12,6 @@ print(get_calling_script_file_path())
 
 print(get_file_working_directory())
 
-print(here())
+print(here(".."))
 
 print()

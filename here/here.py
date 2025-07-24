@@ -4,31 +4,54 @@ import inspect
 
 
 def get_calling_script_file_path(print_debug_info=False):
-    # Get the stack frame of the caller
+    """
+    Get the file path of the script that called this function.
+    Handles cases where the function is called from a debugger or interactive environment.
+
+    Args:
+        print_debug_info (bool): If True, prints debug information about the call stack.
+
+    Returns:
+        str: The file path of the calling script.
+    """
     stack = inspect.stack()
 
-    relevant_stack = [frame for frame in stack if "debugpy" not in frame.filename]
+    # Filter out stack frames that belong to the Python interpreter or debugger
+    relevant_stack = [
+        frame
+        for frame in stack
+        if "__file__" in frame.frame.f_globals and "debugpy" not in frame.filename
+    ]
 
     if not relevant_stack:
-        raise RuntimeError("No calling script found in the stack.")
+        # Fallback: If no relevant stack frames are found, assume interactive mode
+        if print_debug_info:
+            print("Debug Info: No relevant stack frames found. Assuming interactive mode.")
+        return str(Path.cwd())
 
-    if len(relevant_stack) > 1:
-        initial_caller_frame = relevant_stack[-1]
-        initial_caller_filename = initial_caller_frame.filename
+    # Iterate through the stack frames in reverse order
+    # to find the first frame that does not contain "python.3" in its filename,
+    # because those are likely to be internal Python frames or debugger frames.
+    for frame in reversed(relevant_stack):
+        if "python3" not in frame.filename:
+            initial_caller_frame = frame
+            break
     else:
-        initial_caller_frame = relevant_stack[0]
-        initial_caller_filename = initial_caller_frame.filename
+        # Fallback: If all frames contain "python.3", use the last frame
+        initial_caller_frame = relevant_stack[-1]
+
+    initial_caller_filename = initial_caller_frame.filename
 
     if print_debug_info:
         print(f"Debug Info: Found {len(relevant_stack)} relevant stack frames.")
         print(
-            f"Debug Info: the function was originally called from this file: {initial_caller_filename}"
+            f"Debug Info: The function was originally called from this file: {initial_caller_filename}"
         )
 
-    return initial_caller_filename
+    return str(Path(initial_caller_filename).resolve())
 
 
-def get_file_working_directory(file=get_calling_script_file_path()):
+def get_file_working_directory(file=None):
     """
     Determines the root directory of the current file working directory.
 
@@ -45,11 +68,15 @@ def get_file_working_directory(file=get_calling_script_file_path()):
         /Users/username/my_workspace
     """
 
+    if file is None:
+        file = get_calling_script_file_path()
+
     try:
         # Check if running in a Jupyter notebook
         if get_ipython() is not None and hasattr(get_ipython(), "config"):
             # Return current working directory
             file_path = Path.cwd()
+
         # could be a .py script or interactive in terminal.
         else:
             try:
