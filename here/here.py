@@ -3,13 +3,29 @@ from IPython import get_ipython
 import inspect
 
 
-def get_calling_script_file_path():
+def get_calling_script_file_path(print_debug_info=False):
     # Get the stack frame of the caller
-    caller_frame = inspect.stack()[1]
+    stack = inspect.stack()
 
-    # Get the file path of the caller
-    caller_file = caller_frame.filename
-    return caller_file
+    relevant_stack = [frame for frame in stack if "debugpy" not in frame.filename]
+
+    if not relevant_stack:
+        raise RuntimeError("No calling script found in the stack.")
+
+    if len(relevant_stack) > 1:
+        initial_caller_frame = relevant_stack[-1]
+        initial_caller_filename = initial_caller_frame.filename
+    else:
+        initial_caller_frame = relevant_stack[0]
+        initial_caller_filename = initial_caller_frame.filename
+
+    if print_debug_info:
+        print(f"Debug Info: Found {len(relevant_stack)} relevant stack frames.")
+        print(
+            f"Debug Info: the function was originally called from this file: {initial_caller_filename}"
+        )
+
+    return initial_caller_filename
 
 
 def get_file_working_directory(file=get_calling_script_file_path()):
@@ -75,7 +91,7 @@ def here(path=""):
         /Users/username/config
     """
 
-    calling_file = inspect.stack()[2].filename
+    calling_file = get_calling_script_file_path()
     file_working_directory = Path(calling_file)
 
     # Split the input path on '/' and join it with the file working directory root
