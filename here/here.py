@@ -61,6 +61,7 @@ def here(path="", print_debug_info=False):
         print(f"Debug Info: Resolved path is '{resolved_path}'.")
     return str(resolved_path)
 
+
 if __name__ == "__main__":
     # Example usage
     print("File Working Directory:", get_calling_script_file_path(print_debug_info=True))
