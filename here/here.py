@@ -2,6 +2,7 @@ import inspect
 from pathlib import Path
 from IPython import get_ipython
 
+
 def get_calling_script_file_path(print_debug_info=False):
     """
     Get the file path of the script that called this function.
@@ -30,7 +31,9 @@ def get_calling_script_file_path(print_debug_info=False):
 
     # Fallback: Return the current working directory
     if print_debug_info:
-        print("Debug Info: No valid calling script found. Falling back to current working directory.")
+        print(
+            "Debug Info: No valid calling script found. Falling back to current working directory."
+        )
     return str(Path.cwd())
 
 
@@ -83,4 +86,7 @@ if __name__ == "__main__":
     print()
     print("Resolved Path of subfolders data/output:", here("data/output", print_debug_info=True))
     print()
-    print("Resolved Path with config folder parallel to Parent:", here("../config", print_debug_info=True))
+    print(
+        "Resolved Path with config folder parallel to Parent:",
+        here("../config", print_debug_info=True),
+    )
