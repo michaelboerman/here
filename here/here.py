@@ -1,5 +1,37 @@
+import inspect
 from pathlib import Path
 from IPython import get_ipython
+
+def get_calling_script_file_path(print_debug_info=False):
+    """
+    Get the file path of the script that called this function.
+    Handles cases where the function is called from an installed package.
+
+    Args:
+        print_debug_info (bool): If True, prints debug information about the call stack.
+
+    Returns:
+        str: The file path of the calling script, or the current working directory as a fallback.
+    """
+    stack = inspect.stack()
+
+    # Debugging: Print the stack for inspection
+    if print_debug_info:
+        print("Debug Info: Full stack trace:")
+        for frame in stack:
+            print(f"  Frame: {frame.function}, File: {frame.filename}")
+
+    # Find the first frame that is not part of the Python system or site-packages
+    for frame in stack:
+        if "site-packages" not in frame.filename and "python" not in frame.filename:
+            if print_debug_info:
+                print(f"Debug Info: Found calling script: {frame.filename}")
+            return str(Path(frame.filename).resolve())
+
+    # Fallback: Return the current working directory
+    if print_debug_info:
+        print("Debug Info: No valid calling script found. Falling back to current working directory.")
+    return str(Path.cwd())
 
 
 def get_root_directory(print_debug_info=False):
@@ -16,16 +48,14 @@ def get_root_directory(print_debug_info=False):
         str: The root directory.
     """
     # Check if running in a Jupyter notebook
-    if get_ipython() is not None and hasattr(get_ipython(), "config"):
+    if "get_ipython" in globals() and hasattr(get_ipython(), "config"):
         if print_debug_info:
             print("Debug Info: Running in a Jupyter notebook. Returning current working directory.")
         return str(Path.cwd())
 
-    # Return the directory of this script
-    root_directory = str(Path(__file__).parent)
-    if print_debug_info:
-        print(f"Debug Info: Returning the directory of this script: {root_directory}")
-    return root_directory
+    # Use the calling script's file path
+    calling_script_path = get_calling_script_file_path(print_debug_info)
+    return str(Path(calling_script_path).parent)
 
 
 def here(path="", print_debug_info=False):
@@ -49,6 +79,8 @@ def here(path="", print_debug_info=False):
 
 if __name__ == "__main__":
     # Example usage
-    print("File Working Directory:", get_root_directory())
-    print("Resolved Path of subfolders data/output:", here("data/output"))
-    print("Resolved Path with config folder parallel to Parent:", here("../config"))
+    print("File Working Directory:", get_root_directory(print_debug_info=True))
+    print()
+    print("Resolved Path of subfolders data/output:", here("data/output", print_debug_info=True))
+    print()
+    print("Resolved Path with config folder parallel to Parent:", here("../config", print_debug_info=True))
