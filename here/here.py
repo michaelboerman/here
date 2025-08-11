@@ -33,7 +33,7 @@ def get_calling_script_file_path(print_debug_info=False):
         if "site-packages" not in frame.filename and "python" not in frame.filename:
             if print_debug_info:
                 print(f"Debug Info: Found calling script: {frame.filename}")
-            return str(Path(frame.filename).resolve())
+            return str(Path(frame.filename).resolve().parent)
 
     # Fallback: Return the current working directory
     if print_debug_info:
