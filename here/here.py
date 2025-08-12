@@ -54,7 +54,7 @@ def here(path="", print_debug_info=False):
     Returns:
         str: The resolved full path.
     """
-    root_directory = Path(get_calling_script_file_path(print_debug_info)).parent
+    root_directory = Path(get_calling_script_file_path(print_debug_info))
     resolved_path = root_directory.joinpath(*path.split("/")).resolve()
     if print_debug_info:
         print(f"Debug Info: Resolving path '{path}' relative to root directory '{root_directory}'.")

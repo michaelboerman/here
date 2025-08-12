@@ -5,11 +5,13 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 # Now import the local "here" module
-from here import get_root_directory, here
+from here import get_calling_script_file_path, here
 
 print()
-print(get_root_directory())
+print(get_calling_script_file_path())
 
 print(here(".."))
+
+print(here("data/output"))
 
 print()
